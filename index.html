@@ -12,6 +12,7 @@
 
 <div id="playButton" class="button" onclick="play()">play</div>
 <div id="pauseButton" class="button" onclick="pause()">pause</div>
+<div id="stopButton" class="button" onclick="stop()">stop</div>
 
 
 
@@ -26,7 +27,7 @@ var musicTime = 20 // sec
 function main(){
 	console.log("Lapa ielādējās");
 	splitTime = new Date().getTime()
-	window.requestAnimationFrame(loop);
+	// window.requestAnimationFrame(loop);
 }
 
 
@@ -51,11 +52,23 @@ function play(){
 	var sheet = document.getElementById("sheet");
 	offsetX -= 1;
 	sheet.style.left = offsetX+"px";
+	window.requestAnimationFrame(loop);
 }
 
 function pause(){
 	console.log("Skaņdarbs ir nopauzēts");
+	var sheet = document.getElementById("sheet");
+	offsetX = 0;
+	sheet.style.left = offsetX+"px";
+	}
+
+function stop(){
+	console.log("Skaņdarbs ir apturēts");
+	var sheet = document.getElementById("sheet");
+	
+	sheet.style.left = offsetX;
 }
+
 </script>
 
 
@@ -66,7 +79,7 @@ function pause(){
 	position: absolute;
 	left: 50px;
 	top: 150px;
-	border: 1px solid red;
+	border: 1px solid black;
 }
 .button {
 	position: absolute;
@@ -81,6 +94,11 @@ function pause(){
 #pauseButton {
 	left: 120px;
 }
+#stopButton {
+	left: 190px;
+}
+
+
 </style>
 
 
