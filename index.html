@@ -3,16 +3,22 @@
 <head>
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title>Dagnija</title>
+	<script type="text/javascript" src="jquery-3.1.0.js"></script>
 </head>
 <body onload="main()">
 
+<audio controls id="music">
+  <source src="mozart.mp3" type="audio/mpeg" >
+Your browser does not support the audio element.
+</audio>
 
-
-<img src="sheet.gif" id="sheet"/>
+<img src="Capture.PNG" id="sheet" />
 
 <div id="playButton" class="button" onclick="play()">play</div>
 <div id="pauseButton" class="button" onclick="pause()">pause</div>
 <div id="stopButton" class="button" onclick="stop()">stop</div>
+<div id="rewindButton" class="button" onclick="rewind()">rewind</div>
+<div id="forwardButton" class="button" onclick="forward()">forward</div>
 
 
 
@@ -24,8 +30,18 @@ var offsetX = 500;
 var splitTime
 var musicTime = 20 // sec 
 
+var animation;
+var time;
+
+var music;
+
+
+
 function main(){
 	console.log("Lapa ielādējās");
+	music = document.getElementById("music");
+	music.currentTime = 48
+	
 	splitTime = new Date().getTime()
 	// window.requestAnimationFrame(loop);
 }
@@ -33,41 +49,74 @@ function main(){
 
 
 function loop(){
-var sheet = document.getElementById("sheet");
+	var sheet = document.getElementById("sheet");
 	var date = new Date().getTime()
 	
 	var deltaTime = date-splitTime
-splitTime = date
+	splitTime = date
+		
+	var move = (deltaTime/1000)*(sheet.width/musicTime)
+	console.log(move)
+	offsetX -= move;
+	if(offsetX<=50 || music.currentTime>=60){
+		pause()
+		music.pause()
+	} else {
+		sheet.style.left = offsetX+"px"
+		animation = window.requestAnimationFrame(loop)
+	}
 	
-var move = (deltaTime/1000)*(sheet.width/musicTime)
-console.log(move)
-offsetX -= move;
-	sheet.style.left = offsetX+"px"
-	window.requestAnimationFrame(loop)
+
 
 }
 
 function play(){
 	console.log("Spēlējam skaņdarbu");
+	time = new Date().getTime();
 	var sheet = document.getElementById("sheet");
-	offsetX -= 1;
-	sheet.style.left = offsetX+"px";
-	window.requestAnimationFrame(loop);
+	// offsetX -= 1;
+	// sheet.style.left = offsetX+"px";
+if (splitTime == 0) {
+splitTime = new Date().getTime()
+} 
+music.play()
+	animation = window.requestAnimationFrame(loop);
 }
 
 function pause(){
 	console.log("Skaņdarbs ir nopauzēts");
 	var sheet = document.getElementById("sheet");
-	offsetX = 0;
-	sheet.style.left = offsetX+"px";
+	
+	window.cancelAnimationFrame(animation)
+	splitTime = 0
 	}
 
 function stop(){
 	console.log("Skaņdarbs ir apturēts");
 	var sheet = document.getElementById("sheet");
-	
-	sheet.style.left = offsetX;
+	offsetX = 500
+	splitTime = 0
+	sheet.style.left = offsetX + "px";
+	console.log(animation);
+	window.cancelAnimationFrame(animation);
 }
+
+function rewind(){
+	console.log("Skaņdarbs ir attīts");
+	var sheet = document.getElementById("sheet");
+	offsetX = offsetX + 10;
+	sheet.style.left = offsetX + "px";
+}
+
+function forward(){
+	console.log("Skaņdarbs ir attīts");
+	var sheet = document.getElementById("sheet");
+	offsetX = offsetX - 10;
+	sheet.style.left = offsetX + "px";
+}
+
+
+
 
 </script>
 
@@ -83,7 +132,7 @@ function stop(){
 }
 .button {
 	position: absolute;
-	top: 20px;
+	top: 70px;
 	border: 1px solid blue;
 	width: 50px;
 	height: 50px;
@@ -95,9 +144,14 @@ function stop(){
 	left: 120px;
 }
 #stopButton {
-	left: 190px;
+	left: 190px;	
 }
-
+#rewindButton {
+	left: 260px;
+}
+#forwardButton {
+	left: 330px;
+}
 
 </style>
 
