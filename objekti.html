@@ -1,0 +1,180 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="lv" lang="lv">
+<head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>Dagnija</title>
+	<script type="text/javascript" src="jquery-3.1.0.js"></script>
+	<script type="text/javascript" src="Class.js"></script>
+</head>
+<body onload="main()">
+
+
+<div id="playButton" class="button" onclick="player1.play()">play</div>
+<div id="pauseButton" class="button" onclick="pause()">pause</div>
+<div id="stopButton" class="button" onclick="stop()">stop</div>
+<div id="rewindButton" class="button" onclick="rewind()">rewind</div>
+<div id="forwardButton" class="button" onclick="forward()">forward</div>
+
+
+<div id="audios"></div>
+<div id="sheet"></div>
+
+
+
+
+
+
+<script>
+
+
+
+var firstSongData = {
+	title: "7 nation army",
+	duration: 340, // sec
+	sheetWidth: 20000, // px
+	instruments: [
+		{
+			id: "bass",
+			img: "bass.png",
+			audio: "bass.mp3",
+		},
+		{
+			id: "drums",
+			img: "drums.png",
+			audio: "drums.mp3",
+		},
+
+	]
+}
+
+var secondSongData = {
+	title: "kur tu teci",
+	duration: 459, // sec
+	sheetWidth: 20000, // px
+	instruments: [
+		{
+			id: "bass",
+			img: "bass.png",
+			audio: "bass.mp3",
+		},
+		{
+			id: "drums",
+			img: "drums.png",
+			audio: "drums.mp3",
+		},
+
+	]
+}
+
+
+
+
+
+var Player = Class.extend({
+	init: function(data){
+		this.title = data.title
+		this.duration = data.duration
+		this.sheetWidth = data.sheetWidth
+		this.instruments = []
+
+		this.refs = {
+			sheet: document.getElementById("sheet"),
+			audios: document.getElementById("audios"),
+		}
+
+		this.initInstruments(data.instruments)
+	},
+
+	initInstruments: function(instruments){
+		for(var i=0; i<instruments.length; i++){
+			var instrument = new Instrument(instruments[i], this.refs)
+			this.instruments.push( instrument )
+			
+		}
+	},
+
+	play: function(){
+		for(var i=0; i<this.instruments.length; i++){
+			this.instruments[i].play()
+		}
+	},
+
+	pause: function(){
+
+	},
+
+	stop: function(){
+
+	},
+})
+
+
+var Instrument = Class.extend({
+	init: function(data, refs){
+		this.id = data.id
+		this.img = data.img
+		this.audio = data.audio
+
+		refs.sheet.innerHTML += '<div> <img id="img'+this.id+'" src="assets/' +this.img + '" </div>'
+		refs.audios.innerHTML += '<audio controls id="audio'+this.id+'" src="assets/'+this.audio+'"></audio>'
+
+		this.refs = {
+			img: document.getElementById("img"+this.id),
+			audio: document.getElementById("audio"+this.id)
+		}
+	},
+
+	play: function(){
+		this.refs.audio.play()
+	},
+})
+
+
+
+function main(){
+	player1 = new Player(firstSongData)
+}
+
+
+
+
+</script>
+
+
+
+
+<style>
+#sheet {
+	position: absolute;
+	
+	top: 150px;
+	border: 1px solid black;
+}
+.button {
+	position: absolute;
+	top: 70px;
+	border: 1px solid blue;
+	width: 50px;
+	height: 50px;
+}
+#playButton {
+	left: 50px;
+}
+#pauseButton {
+	left: 120px;
+}
+#stopButton {
+	left: 190px;	
+}
+#rewindButton {
+	left: 260px;
+}
+#forwardButton {
+	left: 330px;
+}
+
+</style>
+
+
+</body>
+</html>

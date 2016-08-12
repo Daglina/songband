@@ -4,15 +4,13 @@
 	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
 	<title>Dagnija</title>
 	<script type="text/javascript" src="jquery-3.1.0.js"></script>
+	<script type="text/javascript" src="Class.js"></script>
 </head>
 <body onload="main()">
 
-<audio controls id="music">
-  <source src="drums.mp3" type="audio/mpeg" >
-Your browser does not support the audio element.
-</audio>
+<audio controls id="music" src="assets/drums.mp3"></audio>
 
-<img src="drums.png" id="sheet" />
+<img src="assets/drums.png" id="sheet" />
 
 <div id="playButton" class="button" onclick="play()">play</div>
 <div id="pauseButton" class="button" onclick="pause()">pause</div>
@@ -25,6 +23,7 @@ Your browser does not support the audio element.
 
 
 <script>
+
 
 
 var splitTime
@@ -60,7 +59,7 @@ function loop(){
 	splitTime = date
 
 	if(isPlaying){
-		console.log("loop");
+		// console.log("loop");
 		var move = timeToPx( (deltaTime/1000) )
 		offsetX -= move;
 		setOffset()
