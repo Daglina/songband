@@ -8,11 +8,11 @@
 <body onload="main()">
 
 <audio controls id="music">
-  <source src="mozart.mp3" type="audio/mpeg" >
+  <source src="drums.mp3" type="audio/mpeg" >
 Your browser does not support the audio element.
 </audio>
 
-<img src="Capture.PNG" id="sheet" />
+<img src="drums.png" id="sheet" />
 
 <div id="playButton" class="button" onclick="play()">play</div>
 <div id="pauseButton" class="button" onclick="pause()">pause</div>
@@ -26,93 +26,109 @@ Your browser does not support the audio element.
 
 <script>
 
-var offsetX = 500;
+
 var splitTime
-var musicTime = 20 // sec 
+var musicTime // sec
 
 var animation;
 var time;
 
 var music;
-
-
+var musicStep=3;
+var startPosition=100
+var offsetX = 0
 
 function main(){
 	console.log("Lapa ielādējās");
 	music = document.getElementById("music");
-	music.currentTime = 48
+	musicTime = music.duration
+	isPlaying = false
+	sheet = document.getElementById("sheet");
 	
 	splitTime = new Date().getTime()
-	// window.requestAnimationFrame(loop);
-}
+	sheet.style.left = (startPosition+offsetX)+"px"
+	window.requestAnimationFrame(loop)
+	}
+
 
 
 
 function loop(){
-	var sheet = document.getElementById("sheet");
+
 	var date = new Date().getTime()
-	
 	var deltaTime = date-splitTime
 	splitTime = date
-		
-	var move = (deltaTime/1000)*(sheet.width/musicTime)
-	console.log(move)
-	offsetX -= move;
-	if(offsetX<=50 || music.currentTime>=60){
-		pause()
-		music.pause()
-	} else {
-		sheet.style.left = offsetX+"px"
-		animation = window.requestAnimationFrame(loop)
+
+	if(isPlaying){
+		console.log("loop");
+		var move = timeToPx( (deltaTime/1000) )
+		offsetX -= move;
+		setOffset()
 	}
-	
 
-
+	window.requestAnimationFrame(loop)
 }
+
+
 
 function play(){
 	console.log("Spēlējam skaņdarbu");
-	time = new Date().getTime();
-	var sheet = document.getElementById("sheet");
-	// offsetX -= 1;
-	// sheet.style.left = offsetX+"px";
-if (splitTime == 0) {
-splitTime = new Date().getTime()
-} 
-music.play()
-	animation = window.requestAnimationFrame(loop);
+	isPlaying = true
+	
+	if (splitTime == 0) {
+	splitTime = new Date().getTime()
+	} 
+	music.play()
 }
 
 function pause(){
 	console.log("Skaņdarbs ir nopauzēts");
-	var sheet = document.getElementById("sheet");
-	
-	window.cancelAnimationFrame(animation)
+	isPlaying = false
 	splitTime = 0
-	}
+	music.pause()
+}
 
 function stop(){
 	console.log("Skaņdarbs ir apturēts");
-	var sheet = document.getElementById("sheet");
-	offsetX = 500
-	splitTime = 0
-	sheet.style.left = offsetX + "px";
-	console.log(animation);
-	window.cancelAnimationFrame(animation);
+	pause()
+	music.currentTime = 0
+	offsetX = startPosition
+	setOffset()
 }
 
 function rewind(){
 	console.log("Skaņdarbs ir attīts");
-	var sheet = document.getElementById("sheet");
-	offsetX = offsetX + 10;
-	sheet.style.left = offsetX + "px";
+	if(music.currentTime<musicStep){
+		stop()
+		play()
+	}
+	else{
+	music.currentTime-=musicStep
+	offsetX += timeToPx(musicStep)
+	setOffset()
+}
+
 }
 
 function forward(){
 	console.log("Skaņdarbs ir attīts");
-	var sheet = document.getElementById("sheet");
-	offsetX = offsetX - 10;
-	sheet.style.left = offsetX + "px";
+	if(music.currentTime>musicTime-musicStep){
+		stop()
+	}
+	else{
+		music.currentTime+=musicStep
+		offsetX -= timeToPx(musicStep)
+		setOffset()
+	}
+}
+
+function timeToPx(time){ //sec
+	var px = time*(sheet.width/musicTime)
+	return px
+}
+
+function setOffset(){
+	sheet.style.left = (startPosition+offsetX) + "px";
 }
 
 
@@ -126,7 +142,7 @@ function forward(){
 <style>
 #sheet {
 	position: absolute;
-	left: 50px;
+	
 	top: 150px;
 	border: 1px solid black;
 }
